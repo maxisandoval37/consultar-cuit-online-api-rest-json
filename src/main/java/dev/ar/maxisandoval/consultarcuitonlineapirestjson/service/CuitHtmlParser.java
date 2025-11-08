@@ -1,9 +1,11 @@
 package dev.ar.maxisandoval.consultarcuitonlineapirestjson.service;
 
 import dev.ar.maxisandoval.consultarcuitonlineapirestjson.model.*;
+import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.*;
 
+@RequiredArgsConstructor
 public class CuitHtmlParser {
 
     public static CuitResultDto parse(String html) {
