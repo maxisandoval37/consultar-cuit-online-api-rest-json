@@ -12,6 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 public class CuitProxyController {
 
     private final WebClient http;
+    private final String ERROR = "error";
 
     public CuitProxyController(WebClient.Builder b) {
         this.http = b.build();
@@ -26,7 +27,7 @@ public class CuitProxyController {
         if (cuit.isEmpty()) {
             return Mono.just(ResponseEntity.badRequest()
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(Map.of("error", "Parámetro ?cuit (o ?cuilt) requerido")));
+                    .body(Map.of(ERROR, "Parámetro cuit requerido")));
         }
 
         String target = "https://www.cuitonline.com/api/pigeon-content/search/" + cuit + "/anonymous/1";
@@ -53,7 +54,7 @@ public class CuitProxyController {
                         } else if (maybeJson != null) {
                             body = maybeJson;
                         } else {
-                            body = Map.of("raw", bodyStr);
+                            body = Map.of(ERROR, "No se obtuvieron datos a partir del cuit ingresado");
                         }
                     }
 
@@ -66,7 +67,7 @@ public class CuitProxyController {
                         Mono.just(ResponseEntity.status(HttpStatus.BAD_GATEWAY)
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .headers(h -> h.setAccessControlAllowOrigin("*"))
-                                .body(Map.of("error", ex.toString()))));
+                                .body(Map.of(ERROR, ex.toString()))));
     }
 
     private static Object tryParseJson(String s) {
